@@ -209,18 +209,18 @@ def _render_matches(
             len(ignored_matches))
         for match in ignored_matches:
             if match.ignored:
-                print(formatter.format(match, options.colored))
+                console.print(formatter.format(match, options.colored), soft_wrap=True)
     if fatal_matches:
         _logger.warning("Listing %s violation(s) that are fatal", len(fatal_matches))
         for match in fatal_matches:
             if not match.ignored:
-                print(formatter.format(match, options.colored))
+                console.print(formatter.format(match, options.colored), soft_wrap=True)
 
     # If run under GitHub Actions we also want to emit output recognized by it.
     if os.getenv('GITHUB_ACTIONS') == 'true' and os.getenv('GITHUB_WORKFLOW'):
         formatter = formatters.AnnotationsFormatter(cwd, True)
         for match in matches:
-            print(formatter.format(match))
+            console.print(formatter.format(match), markup=False, soft_wrap=True)
 
 
 def _get_matches(rules: RulesCollection, options: "Namespace") -> list:
