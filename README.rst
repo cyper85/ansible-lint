@@ -10,9 +10,9 @@
    :target: https://docs.ansible.com/ansible/latest/community/code_of_conduct.html
    :alt: Ansible Code of Conduct
 
-.. image:: https://img.shields.io/badge/Mailing%20lists-Ansible-orange.svg
-   :target: https://docs.ansible.com/ansible/latest/community/communication.html#mailing-list-information
-   :alt: Ansible mailing lists
+.. image:: https://img.shields.io/badge/Discussions-gray.svg
+   :target: https://github.com/ansible/ansible-lint/discussions
+   :alt: Discussions
 
 .. image:: https://github.com/ansible/ansible-lint/workflows/gh/badge.svg
    :target: https://github.com/ansible/ansible-lint/actions?query=workflow%3Agh+branch%3Amaster+event%3Apush
@@ -42,6 +42,18 @@ Installing
 .. installing-docs-inclusion-marker-do-not-remove
 
 Installing on Windows is not supported because we use symlinks inside Python packages.
+
+While ansible-lint project does not directly ships a container, the
+tool is included inside the toolset_ container.  Please avoid raising any bugs
+related to containers and use discussions_ forum instead.
+
+.. code-block:: bash
+
+    # replace docker with podman
+    docker run -h toolset -it quay.io/ansible/toolset ansible-lint --version
+
+.. _toolset: https://github.com/ansible-community/toolset
+.. _discussions: https://github.com/ansible/ansible-lint/discussions
 
 Using Pip
 ---------
