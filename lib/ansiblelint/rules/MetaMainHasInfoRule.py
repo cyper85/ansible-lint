@@ -1,6 +1,9 @@
 # Copyright (c) 2016, Will Thames and contributors
 # Copyright (c) 2018, Ansible Project
 
+import warnings
+
+from ansiblelint._galaxy import PLATFORMS
 from ansiblelint.rules import AnsibleLintRule
 
 META_STR_INFO = (
@@ -24,6 +27,8 @@ def _platform_info_errors_itr(platforms):
             yield 'Platforms should be a list of dictionaries'
         elif 'name' not in platform:
             yield 'Platform should contain name'
+        elif platform['name'] not in PLATFORMS:
+            warnings.warn(f"Unknown platform {platform['name']} found.", UserWarning)
 
 
 def _galaxy_info_errors_itr(galaxy_info,

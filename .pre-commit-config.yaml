@@ -69,3 +69,14 @@ repos:
   rev: v2.6.0
   hooks:
   - id: pylint
+- repo: local
+  hooks:
+  - id: update-galaxy-platforms
+    name: Verify that galaxy platforms are not outdated
+    description: >-
+      Assures our cached version of galaxy supported platforms is not outdated.
+    entry: >-
+      python3 tools/dump-platforms.py
+    pass_filenames: false
+    language: system
+    always_run: true
