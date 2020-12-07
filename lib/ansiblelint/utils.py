@@ -597,8 +597,7 @@ def get_action_tasks(yaml, file):
     tasks[:] = [task for task in tasks if all(k not in task for k in block_rescue_always)]
 
     return [task for task in tasks if
-            set(['include', 'include_tasks',
-                'import_playbook', 'import_tasks']).isdisjoint(task.keys())]
+            {'include', 'include_tasks', 'import_playbook', 'import_tasks'}.isdisjoint(task.keys())]
 
 
 def get_normalized_tasks(yaml, file):
