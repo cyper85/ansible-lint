@@ -286,9 +286,7 @@ def _taskshandlers_children(basedir, k, v, parent_type: FileType) -> List:
         if 'include_role' in th or 'import_role' in th:  # lgtm [py/unreachable-statement]
             th = normalize_task_v2(th)
             _validate_task_handler_action_for_role(th['action'])
-            results.extend(_roles_children(basedir, k, [th['action'].get("name")],
-                                           parent_type,
-                                           main=th['action'].get('tasks_from', 'main')))
+            results.extend(_roles_children(basedir, k, [th['action'].get("name")]))
             continue
 
         if 'block' not in th:
@@ -341,20 +339,19 @@ def _validate_task_handler_action_for_role(th_action: dict) -> None:
         )
 
 
-def _roles_children(basedir: str, k, v, parent_type: FileType, main='main') -> list:
+def _roles_children(basedir: str, k, v) -> list:
     results = []
     for role in v:
         if isinstance(role, dict):
             if 'role' in role or 'name' in role:
                 if 'tags' not in role or 'skip_ansible_lint' not in role['tags']:
                     results.extend(_look_for_role_files(basedir,
-                                                        role.get('role', role.get('name')),
-                                                        main=main))
+                                                        role.get('role', role.get('name'))))
             elif k != 'dependencies':
                 raise SystemExit('role dict {0} does not contain a "role" '
                                  'or "name" key'.format(role))
         else:
-            results.extend(_look_for_role_files(basedir, role, main=main))
+            results.extend(_look_for_role_files(basedir, role))
     return results
 
 
