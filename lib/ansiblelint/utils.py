@@ -53,17 +53,30 @@ from ansiblelint.file_utils import normpath
 
 _logger = logging.getLogger(__name__)
 
+
+def read_ansible_password_from_env() -> str:
+    """
+    Reads the Vault-Password from os environment ANSIBLE_VAULT_PASSWORD
+    or from file from os environment ANSIBLE_VAULT_PASSWORD_FILE
+
+    :return: Vault-Password or 'x'
+    """
+    vault_password = os.environ.get('ANSIBLE_VAULT_PASSWORD', 'x')
+    vault_password_file_path = os.environ.get('ANSIBLE_VAULT_PASSWORD_FILE', None)
+    if vault_password_file_path is not None and os.path.exists(vault_password_file_path):
+        try:
+            with open(vault_password_file_path, 'r') as vault_password_file:
+                vault_password = vault_password_file.read()
+        except IOError as e:
+            _logger.info('Cannot read vault_password_file %s (%s)'
+                         % (vault_password_file_path, str(e)))
+    return vault_password
+
+
 # ansible-lint doesn't need/want to know about encrypted secrets, so we pass a
 # string as the password to enable such yaml files to be opened and parsed
 # successfully.
-DEFAULT_VAULT_PASSWORD = os.environ.get('ANSIBLE_VAULT_PASSWORD', 'x')
-if os.environ.get('ANSIBLE_VAULT_PASSWORD_FILE'):
-    try:
-        with open(os.environ.get('ANSIBLE_VAULT_PASSWORD_FILE'), 'r') as vault_password_file:
-            DEFAULT_VAULT_PASSWORD = vault_password_file.read()
-    except IOError as e:
-        _logger.info('Cannot read vault_password_file %s (%s)'
-                     % (os.environ.get('ANSIBLE_VAULT_PASSWORD_FILE'), str(e)))
+DEFAULT_VAULT_PASSWORD = read_ansible_password_from_env()
 
 PLAYBOOK_DIR = os.environ.get('ANSIBLE_PLAYBOOK_DIR', None)
 
@@ -150,6 +163,7 @@ def _rebind_match_filename(filename: str, func) -> Callable:
         except MatchError as e:
             e.filename = filename
             raise e
+
     return func_wrapper
 
 
@@ -628,6 +642,7 @@ def parse_yaml_linenumbers(data, filename):
 
     The line numbers are stored in each node's LINE_NUMBER_KEY key.
     """
+
     def compose_node(parent, index):
         # the line number where the previous token has ended (plus empty lines)
         line = loader.line
@@ -703,9 +718,9 @@ def is_playbook(filename: str) -> bool:
             filename, e)
     else:
         if (
-            isinstance(f, AnsibleSequence) and
-            hasattr(f, 'keys') and
-            playbooks_keys.intersection(next(iter(f), {}).keys())
+                isinstance(f, AnsibleSequence) and
+                hasattr(f, 'keys') and
+                playbooks_keys.intersection(next(iter(f), {}).keys())
         ):
             return True
     return False
