@@ -588,7 +588,9 @@ def get_action_tasks(yaml_object, file):
     if file['type'] in ['tasks', 'handlers']:
         tasks = add_action_type(yaml_object, file['type'])
     else:
-        tasks.extend(extract_from_list(yaml_object, ['tasks', 'handlers', 'pre_tasks', 'post_tasks']))
+        tasks.extend(extract_from_list(
+            yaml_object,
+            ['tasks', 'handlers', 'pre_tasks', 'post_tasks']))
 
     # Add sub-elements of block/rescue/always to tasks list
     tasks.extend(extract_from_list(tasks, ['block', 'rescue', 'always']))
@@ -597,7 +599,12 @@ def get_action_tasks(yaml_object, file):
     tasks[:] = [task for task in tasks if all(k not in task for k in block_rescue_always)]
 
     return [task for task in tasks if
-            {'include', 'include_tasks', 'import_playbook', 'import_tasks'}.isdisjoint(task.keys())]
+            {
+                'include',
+                'include_tasks',
+                'import_playbook',
+                'import_tasks',
+            }.isdisjoint(task.keys())]
 
 
 def get_normalized_tasks(yaml_object, file):
@@ -645,7 +652,11 @@ def parse_yaml_linenumbers(data, filename):
         loader.compose_node = compose_node
         loader.construct_mapping = construct_mapping
         data = loader.get_single_data()
-    except (yaml.parser.ParserError, yaml.scanner.ScannerError, yaml.YAMLError) as exception:
+    except (
+            yaml.parser.ParserError,
+            yaml.scanner.ScannerError,
+            yaml.YAMLError,
+    ) as exception:
         raise SystemExit("Failed to parse YAML in %s: %s" % (filename, str(exception)))
     return data
 
