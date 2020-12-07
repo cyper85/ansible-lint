@@ -231,13 +231,12 @@ def play_children(basedir, item, parent_type, playbook_dir):
     (k, v) = item
     add_all_plugin_dirs(os.path.abspath(basedir))
 
-    if k in delegate_map:
-        if v:
-            v = template(os.path.abspath(basedir),
-                         v,
-                         dict(playbook_dir=PLAYBOOK_DIR or os.path.abspath(basedir)),
-                         fail_on_undefined=False)
-            return delegate_map[k](basedir, k, v, parent_type)
+    if k in delegate_map and v:
+        v = template(os.path.abspath(basedir),
+                     v,
+                     dict(playbook_dir=PLAYBOOK_DIR or os.path.abspath(basedir)),
+                     fail_on_undefined=False)
+        return delegate_map[k](basedir, k, v, parent_type)
     return []
 
 
