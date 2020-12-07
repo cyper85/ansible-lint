@@ -56,7 +56,14 @@ _logger = logging.getLogger(__name__)
 # ansible-lint doesn't need/want to know about encrypted secrets, so we pass a
 # string as the password to enable such yaml files to be opened and parsed
 # successfully.
-DEFAULT_VAULT_PASSWORD = 'x'
+DEFAULT_VAULT_PASSWORD = os.environ.get('ANSIBLE_VAULT_PASSWORD', 'x')
+if os.environ.get('ANSIBLE_VAULT_PASSWORD_FILE'):
+    try:
+        with open(os.environ.get('ANSIBLE_VAULT_PASSWORD_FILE'), 'r') as vault_password_file:
+            DEFAULT_VAULT_PASSWORD = vault_password_file.read()
+    except IOError as e:
+        _logger.info('Cannot read vault_password_file %s (%s)'
+                     % (os.environ.get('ANSIBLE_VAULT_PASSWORD_FILE'), str(e)))
 
 PLAYBOOK_DIR = os.environ.get('ANSIBLE_PLAYBOOK_DIR', None)
 
