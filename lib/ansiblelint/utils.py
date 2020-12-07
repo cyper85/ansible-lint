@@ -645,7 +645,7 @@ def parse_yaml_linenumbers(data, filename):
         loader.compose_node = compose_node
         loader.construct_mapping = construct_mapping
         data = loader.get_single_data()
-    except (yaml.parser.ParserError, yaml.scanner.ScannerError) as exception:
+    except (yaml.parser.ParserError, yaml.scanner.ScannerError, yaml.YAMLError) as exception:
         raise SystemExit("Failed to parse YAML in %s: %s" % (filename, str(exception)))
     return data
 
