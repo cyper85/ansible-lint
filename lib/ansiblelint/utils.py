@@ -583,12 +583,12 @@ def add_action_type(actions, action_type):
     return results
 
 
-def get_action_tasks(yaml, file):
+def get_action_tasks(yaml_object, file):
     tasks = list()
     if file['type'] in ['tasks', 'handlers']:
-        tasks = add_action_type(yaml, file['type'])
+        tasks = add_action_type(yaml_object, file['type'])
     else:
-        tasks.extend(extract_from_list(yaml, ['tasks', 'handlers', 'pre_tasks', 'post_tasks']))
+        tasks.extend(extract_from_list(yaml_object, ['tasks', 'handlers', 'pre_tasks', 'post_tasks']))
 
     # Add sub-elements of block/rescue/always to tasks list
     tasks.extend(extract_from_list(tasks, ['block', 'rescue', 'always']))
@@ -600,8 +600,8 @@ def get_action_tasks(yaml, file):
             {'include', 'include_tasks', 'import_playbook', 'import_tasks'}.isdisjoint(task.keys())]
 
 
-def get_normalized_tasks(yaml, file):
-    tasks = get_action_tasks(yaml, file)
+def get_normalized_tasks(yaml_object, file):
+    tasks = get_action_tasks(yaml_object, file)
     res = []
     for task in tasks:
         # An empty `tags` block causes `None` to be returned if
