@@ -2,11 +2,6 @@
 
 try:
     import pkg_resources
-except ImportError:
-    pass
-
-
-try:
     __version__ = pkg_resources.get_distribution('ansible-lint').version
-except Exception:
+except (Exception, ImportError):
     __version__ = 'unknown'
