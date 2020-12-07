@@ -379,7 +379,7 @@ def _rolepath(basedir: str, role: str) -> Optional[str]:
     return role_path
 
 
-def _look_for_role_files(basedir: str, role: str, main='main') -> list:
+def _look_for_role_files(basedir: str, role: str) -> list:
     role_path = _rolepath(basedir, role)
     if not role_path:
         return []
