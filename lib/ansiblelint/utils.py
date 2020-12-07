@@ -51,15 +51,14 @@ from ansiblelint.constants import (
 from ansiblelint.errors import MatchError
 from ansiblelint.file_utils import normpath
 
+_logger = logging.getLogger(__name__)
+
 # ansible-lint doesn't need/want to know about encrypted secrets, so we pass a
 # string as the password to enable such yaml files to be opened and parsed
 # successfully.
 DEFAULT_VAULT_PASSWORD = 'x'
 
 PLAYBOOK_DIR = os.environ.get('ANSIBLE_PLAYBOOK_DIR', None)
-
-
-_logger = logging.getLogger(__name__)
 
 
 def parse_yaml_from_file(filepath: str) -> dict:
